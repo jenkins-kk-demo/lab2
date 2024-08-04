@@ -20,5 +20,19 @@ pipeline {
                 junit testResults: 'target/surefire-reports/TEST-*.xml'
             }
         }
+
+        stage('Local Deployment') {
+        steps {
+            sh """ java -jar target/hello-demo-*.jar > /dev/null & """
+            }
+        }
+    
+        stage('Integration Testing') {
+        steps {
+            sh "sleep ${params.SLEEP_TIMER}"
+            sh """ curl -s http://localhost:${params.APPLICATION_PORT}/hello | grep -i "Hello, KodeKloud community!" """
+            }
+        }
+
     }
 }
